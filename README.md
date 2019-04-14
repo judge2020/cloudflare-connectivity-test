@@ -1,5 +1,7 @@
 # cloudflare-test.judge.sh
 
+Cloudflare connection test (unofficial).
+
 ## Project setup
 ```
 npm install
