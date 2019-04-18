@@ -1,0 +1,2 @@
+# Redirect default Netlify subdomain to primary domain
+https://cloudflare-connectivity-test.netlify.com/* https://cloudflare-test.judge.sh/:splat 301!

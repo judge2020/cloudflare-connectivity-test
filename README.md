@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0f011cf8-ae4f-4f4c-b810-0bf7b299d863/deploy-status)](https://app.netlify.com/sites/cloudflare-connectivity-test/deploys)
+
 # cloudflare-test.judge.sh
 
 Cloudflare connection test (unofficial).
