@@ -22,7 +22,9 @@
         <p class="title">PRO</p>
         <div class="domain-item" v-for="(site, index) in pro" :key="index">
           <p class="heading" v-text="site"/>
-          <p class="title" v-text="finished[site]" :aria-expanded="loadHostname(site)"/>
+          <div v-show="site in finished" :aria-expanded="loadHostname(site)">
+            <p class="title" v-text="finished[site]"/>
+          </div>
           <hr>
         </div>
       </div>
@@ -65,16 +67,16 @@
 </template>
 
 <script>
+import Vue from "vue";
 import Axios from "axios";
-import { setTimeout } from "timers";
 export default {
   name: "Main",
   props: {},
   data() {
     return {
+      iata: [],
       finished: [],
       free: [
-        "judge.sh",
         "judge2020.com",
         "digital.com",
         "www.shoutmeloud.com",
@@ -96,6 +98,7 @@ export default {
         "www.jsdelivr.com"
       ],
       business: [
+        "judge.sh",
         "www.mozilla.org",
         "sontusdatos.org",
         "www.opentech.fund",
@@ -125,9 +128,14 @@ export default {
     };
   },
   mounted() {
-    setTimeout(this.reloadDomains, 2200);
+    this.preloadAirports();
   },
   methods: {
+    preloadAirports() {
+      Axios.get("/iata.json").then(response => {
+        this.iata = response.data;
+      });
+    },
     loadHostname(hostname) {
       if (this.finished[hostname]) {
         return;
@@ -138,16 +146,11 @@ export default {
           .map(n => n.split("="))
           .forEach(element => {
             if (element[0] == "colo") {
-              this.finished[hostname] = element[1];
+              Vue.set(this.finished, hostname, element[1]);
             }
           });
       });
     },
-    reloadDomains() {
-      // We need to re-render because the vue observer for the "finished" array
-      // doesn't update the bindings (finished[site])
-      this.$forceUpdate();
-    }
   }
 };
 </script>
