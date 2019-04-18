@@ -7,6 +7,8 @@ Cloudflare connection test (unofficial).
 npm install
 ```
 
+Note: in order to get IATA code -> city name working, you will need a IATAcodes.org API key. You can populate this at build time with `npm run populate` and the API key set to the variable `IATA_KEY`.
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve

@@ -19,3 +19,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# compiled typescript
+/misc/populate_list.js
+/public/iata.json

@@ -14,7 +14,10 @@
         <p class="title">FREE</p>
         <div class="domain-item" v-for="(site, index) in free" :key="index">
           <p class="heading" v-text="site"/>
-          <p class="title" v-text="finished[site]"/>
+          <div v-if="site in finished">
+            <p class="title" v-text="finished[site]"/>
+            <p class="heading" v-text="iata[finished[site]]"/>
+          </div>
           <hr>
         </div>
       </div>
@@ -22,7 +25,10 @@
         <p class="title">PRO</p>
         <div class="domain-item" v-for="(site, index) in pro" :key="index">
           <p class="heading" v-text="site"/>
-          <p class="title" v-text="finished[site]"/>
+          <div v-if="site in finished">
+            <p class="title" v-text="finished[site]"/>
+            <p class="heading" v-text="iata[finished[site]]"/>
+          </div>
           <hr>
         </div>
       </div>
@@ -30,7 +36,10 @@
         <p class="title">BUSINESS</p>
         <div class="domain-item" v-for="(site, index) in business" :key="index">
           <p class="heading" v-text="site"/>
-          <p class="title" v-text="finished[site]"/>
+          <div v-if="site in finished">
+            <p class="title" v-text="finished[site]"/>
+            <p class="heading" v-text="iata[finished[site]]"/>
+          </div>
           <hr>
         </div>
       </div>
@@ -38,7 +47,10 @@
         <p class="title">ENTERPRISE</p>
         <div class="domain-item" v-for="(site, index) in enterprise" :key="index">
           <p class="heading" v-text="site"/>
-          <p class="title" v-text="finished[site]"/>
+          <div v-if="site in finished">
+            <p class="title" v-text="finished[site]"/>
+            <p class="heading" v-text="iata[finished[site]]"/>
+          </div>
           <hr>
         </div>
       </div>
@@ -126,22 +138,27 @@ export default {
     };
   },
   mounted() {
+    this.preloadAirports();
     this.free.forEach(hostname => {
-      this.loadHostname(hostname)
-    });
-    
-    this.pro.forEach(hostname => {
-      this.loadHostname(hostname)
-    });
-    this.business.forEach(hostname => {
-      this.loadHostname(hostname)
-    });
-    this.enterprise.forEach(hostname => {
-      this.loadHostname(hostname)
+      this.loadHostname(hostname);
     });
 
+    this.pro.forEach(hostname => {
+      this.loadHostname(hostname);
+    });
+    this.business.forEach(hostname => {
+      this.loadHostname(hostname);
+    });
+    this.enterprise.forEach(hostname => {
+      this.loadHostname(hostname);
+    });
   },
   methods: {
+    preloadAirports() {
+      Axios.get("/iata.json").then(response => {
+        this.iata = response.data;
+      });
+    },
     loadHostname(hostname) {
       Axios.get(`https://${hostname}/cdn-cgi/trace`).then(response => {
         response.data
