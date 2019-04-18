@@ -15,5 +15,5 @@ Axios.get(`https://iatacodes.org/api/v6/airports?api_key=${IATA_KEY}`, {
     response.data.response.forEach(element => {
         iataAsKeyValue[element.code] = element.name;
     });
-    writeFileSync("public/iata.json", JSON.stringify(iataAsKeyValue), {mode: 755, encoding: "UTF-8", flag: "w"});
+    writeFileSync("public/iata.json", JSON.stringify(iataAsKeyValue), {mode: 777, encoding: "UTF-8", flag: "w"});
 });
