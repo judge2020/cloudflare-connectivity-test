@@ -1,13 +1,38 @@
 <template>
   <div class="main-content">
-    <section class="hero">
-      <div class="hero-body">
-        <div class="container has-text-centered">
-          <h1 class="title">Cloudflare datacenter reachability</h1>
-          <h2 class="subtitle"></h2>
+    <div class="container has-text-centered">
+      <h1 class="title">Cloudflare datacenter reachability</h1>
+      <h2 class="subtitle"></h2>
+      <br>
+      <p class="subtitle">Test your website:</p>
+      <form @submit="loadTestHostname(testHostname)">
+        <div class="field has-addons has-addons-centered">
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            placeholder="example.com"
+            v-model="testHostname"
+            @blur="loadTestHostname(testHostname)"
+          >
+        </div>
+        <div class="control">
+          <a class="button is-info">GO</a>
         </div>
       </div>
-    </section>
+      </form>
+      
+
+      <div class="domain-item" v-if="testHostname">
+        <p class="heading" v-text="testHostname"/>
+        <div v-if="testHostname in finished">
+          <p class="title" v-text="finished[testHostname]"/>
+          <p class="heading" v-text="iata[finished[testHostname]]"/>
+        </div>
+          <p v-show="testHostname in broken">Likely not a Cloudflare website!</p>
+      </div>
+      <hr>
+    </div>
     <hr class="top-hr">
     <div class="columns has-text-centered">
       <div class="column">
@@ -84,8 +109,10 @@ export default {
   props: {},
   data() {
     return {
+      testHostname: "",
       iata: [],
       finished: [],
+      broken: [],
       free: [
         "judge2020.com",
         "digital.com",
@@ -152,6 +179,13 @@ export default {
     this.enterprise.forEach(hostname => {
       this.loadHostname(hostname);
     });
+
+    // load query string hostname
+    if(location.hash) {
+      this.testHostname = location.hash.replace('#', '');
+      this.loadTestHostname(this.testHostname);
+      this.$forceUpdate();
+    }
   },
   methods: {
     preloadAirports() {
@@ -159,17 +193,27 @@ export default {
         this.iata = response.data;
       });
     },
+    loadTestHostname(hostname) {
+      history.replaceState('', '', hostname.includes('#') ? hostname : '#' + hostname)
+      this.loadHostname(hostname)
+    },
     loadHostname(hostname) {
-      Axios.get(`https://${hostname}/cdn-cgi/trace`).then(response => {
-        response.data
-          .split("\n")
-          .map(n => n.split("="))
-          .forEach(element => {
-            if (element[0] == "colo") {
-              Vue.set(this.finished, hostname, element[1]);
-            }
-          });
-      });
+      Axios.get(`https://${hostname}/cdn-cgi/trace`)
+        .then(response => {
+          response.data
+            .split("\n")
+            .map(n => n.split("="))
+            .forEach(element => {
+              if (element[0] == "colo") {
+                Vue.set(this.finished, hostname, element[1]);
+              }
+            });
+        })
+        .catch(error => {
+          // eslint-disable-next-line
+          console.log(error);
+          Vue.set(this.broken, hostname, 'a');
+        });
     }
   }
 };
