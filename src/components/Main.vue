@@ -129,7 +129,6 @@ export default {
         "reactjs.org",
         "nodejs.org",
         "html5boilerplate.com",
-        "unpkg.com",
         "yarnpkg.com",
         "d3js.org",
         "www.jsdelivr.com"
@@ -141,7 +140,6 @@ export default {
         "www.opentech.fund",
         "cpj.org",
         "www.amnestyusa.org",
-        "www.cpalanka.org",
         "cdt.org",
         "www.counterextremism.com",
         "www.ndi.org",
@@ -155,6 +153,7 @@ export default {
         "discordapp.com",
         "www.zendesk.com",
         "ghost.org",
+        "unpkg.com",
         "www.loc.gov",
         "www.codeguard.com",
         "www.artstation.com",
