@@ -22,4 +22,8 @@ yarn-error.log*
 
 # compiled typescript
 /misc/populate_list.js
+/misc/cloudflare.js
 /public/iata.json
+
+.env
+.serverless

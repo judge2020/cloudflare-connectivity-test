@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "cross-env NODE_ENV=production vue-cli-service build",
-    "populate": "cross-env NODE_ENV=production tsc misc/populate_list.ts && cross-env node misc/populate_list.js",
+    "populate": "cross-env NODE_ENV=production tsc && cross-dotenv node misc/populate_list.js",
+    "upload": "cross-env NODE_ENV=production tsc && cd dist && cross-env DOTENV_CONFIG_PATH=../.env node -r dotenv/config ../misc/cloudflare.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -22,9 +23,14 @@
     "@vue/cli-plugin-eslint": "^3.7.0",
     "@vue/cli-service": "^3.7.0",
     "babel-eslint": "^10.0.1",
+    "cross-dotenv": "^1.0.4",
     "cross-env": "^5.2.0",
+    "crossenv": "0.0.2-security",
+    "dotenv": "^8.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "serverless-cloudflare-workers": "^1.2.0",
+    "smart-fs": "^1.7.7",
     "typescript": "^3.4.5",
     "vue-template-compiler": "^2.5.21"
   },

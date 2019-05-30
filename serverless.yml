@@ -1,0 +1,24 @@
+service:
+  name: cloudflare-connectivity-test
+
+provider:
+  name: cloudflare
+  config:
+    accountId: ${env:CLOUDFLARE_ACCOUNT_ID}
+    zoneId: ${env:CLOUDFLARE_ZONE_ID}
+
+plugins:
+  - serverless-cloudflare-workers
+
+functions:
+  handleFiles:
+    name: handleFiles
+    script: misc/worker
+    resources:
+      kv:
+        - variable: STATIC_KV
+          namespace: static
+    events:
+      - http:
+          url: worker.judge.sh/*
+          method: GET
