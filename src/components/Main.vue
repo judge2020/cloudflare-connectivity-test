@@ -27,6 +27,8 @@
         <div v-if="testHostname in finished">
           <p class="title" v-text="finished[testHostname]" />
           <p class="heading" v-text="iata[finished[testHostname]]" />
+          <p class="heading">First ping: {{ timingsFirst[testHostname] }}</p>
+          <p class="heading">Second ping: {{ timingsSecond[testHostname] }}</p>
         </div>
         <p v-show="testHostname in broken">Likely not a Cloudflare website!</p>
       </div>
@@ -112,7 +114,6 @@
 <script>
 import Vue from "vue";
 import Axios from "axios";
-import { setTimeout } from "timers";
 export default {
   name: "Main",
   props: {},
@@ -183,7 +184,17 @@ export default {
     this.free
       .concat(this.pro, this.business, this.enterprise)
       .forEach(hostname => {
-        this.loadHostname(hostname, 0).then(() => this.loadHostname(hostname, 1));
+        this.loadHostname(hostname, 0)
+          .then(() => {
+            // load UI with ping data
+            this.loadPing(hostname, 0);
+            // begin promise for second ping (TCP and DNS overhead should be gone)
+            return this.loadHostname(hostname, 1);
+          })
+          .then(() => {
+            // load UI with second ping data
+            this.loadPing(hostname, 1);
+          });
       });
 
     // load query string hostname
@@ -192,20 +203,22 @@ export default {
       this.loadTestHostname(this.testHostname);
       this.$forceUpdate();
     }
-    setTimeout(() => {
-      this.loadPing(0)
-      this.loadPing(1)
-    }, 1500);
   },
   methods: {
-    loadPing(loadNumber = 0) {
-      performance.getEntriesByType("resource")
+    loadPing(hostname, loadNumber = 0) {
+      performance
+        .getEntriesByType("resource")
+        .filter(timing => timing.name.includes(hostname))
         .filter(timing => timing.name.includes(`load=${loadNumber}`))
         .forEach(timing => {
           if (loadNumber == 0) {
-            this.timingsFirst[new URL(timing.name).hostname] = Math.floor(timing.responseEnd - timing.startTime);
+            this.timingsFirst[new URL(timing.name).hostname] = Math.floor(
+              timing.responseEnd - timing.startTime
+            );
           } else {
-            this.timingsSecond[new URL(timing.name).hostname] = Math.floor(timing.responseEnd - timing.startTime);
+            this.timingsSecond[new URL(timing.name).hostname] = Math.floor(
+              timing.responseEnd - timing.startTime
+            );
           }
         });
       this.$forceUpdate();
@@ -221,20 +234,28 @@ export default {
         "",
         hostname.includes("#") ? hostname : "#" + hostname
       );
-      this.loadHostname(hostname);
+      this.loadHostname(hostname, 0)
+        .then(() => {
+          this.loadPing(hostname, 0);
+          return this.loadHostname(hostname, 1);
+        })
+        .then(() => {
+          this.loadPing(hostname, 1);
+        });
     },
     loadHostname(hostname, loadNumber = 0) {
-      return Axios.get(`https://${hostname}/cdn-cgi/trace?load=${loadNumber}`)
-        .then(response => {
-          response.data
-            .split("\n")
-            .map(n => n.split("="))
-            .forEach(element => {
-              if (element[0] == "colo") {
-                Vue.set(this.finished, hostname, element[1]);
-              }
-            });
-        });
+      return Axios.get(
+        `https://${hostname}/cdn-cgi/trace?load=${loadNumber}`
+      ).then(response => {
+        response.data
+          .split("\n")
+          .map(n => n.split("="))
+          .forEach(element => {
+            if (element[0] == "colo") {
+              Vue.set(this.finished, hostname, element[1]);
+            }
+          });
+      });
     }
   }
 };
