@@ -3,80 +3,84 @@
     <div class="container has-text-centered">
       <h1 class="title">Cloudflare datacenter reachability</h1>
       <h2 class="subtitle"></h2>
-      <br>
+      <br />
       <p class="subtitle">Test your website:</p>
       <form @submit="loadTestHostname(testHostname)">
         <div class="field has-addons has-addons-centered">
-        <div class="control">
-          <input
-            class="input"
-            type="text"
-            placeholder="example.com"
-            v-model="testHostname"
-            @blur="loadTestHostname(testHostname)"
-          >
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              placeholder="example.com"
+              v-model="testHostname"
+              @blur="loadTestHostname(testHostname)"
+            />
+          </div>
+          <div class="control">
+            <a class="button is-info">GO</a>
+          </div>
         </div>
-        <div class="control">
-          <a class="button is-info">GO</a>
-        </div>
-      </div>
       </form>
-      
 
       <div class="domain-item" v-if="testHostname">
-        <p class="heading" v-text="testHostname"/>
+        <p class="heading" v-text="testHostname" />
         <div v-if="testHostname in finished">
-          <p class="title" v-text="finished[testHostname]"/>
-          <p class="heading" v-text="iata[finished[testHostname]]"/>
+          <p class="title" v-text="finished[testHostname]" />
+          <p class="heading" v-text="iata[finished[testHostname]]" />
         </div>
-          <p v-show="testHostname in broken">Likely not a Cloudflare website!</p>
+        <p v-show="testHostname in broken">Likely not a Cloudflare website!</p>
       </div>
-      <hr>
+      <hr />
     </div>
-    <hr class="top-hr">
+    <hr class="top-hr" />
     <div class="columns has-text-centered">
       <div class="column">
         <p class="title">FREE</p>
         <div class="domain-item" v-for="(site, index) in free" :key="index">
-          <p class="heading" v-text="site"/>
+          <p class="heading" v-text="site" />
           <div v-if="site in finished">
-            <p class="title" v-text="finished[site]"/>
-            <p class="heading" v-text="iata[finished[site]]"/>
+            <p class="title" v-text="finished[site]" />
+            <p class="heading" v-text="iata[finished[site]]" />
+            <p class="heading">Ping: {{ timings[`https://${site}/cdn-cgi/trace`] }}</p>
           </div>
-          <hr>
+          <hr />
         </div>
       </div>
       <div class="column list-domains">
         <p class="title">PRO</p>
         <div class="domain-item" v-for="(site, index) in pro" :key="index">
-          <p class="heading" v-text="site"/>
+          <p class="heading" v-text="site" />
           <div v-if="site in finished">
-            <p class="title" v-text="finished[site]"/>
-            <p class="heading" v-text="iata[finished[site]]"/>
+            <p class="title" v-text="finished[site]" />
+            <p class="heading" v-text="iata[finished[site]]" />
+            <p class="heading">Ping: {{ timings[`https://${site}/cdn-cgi/trace`] }}</p>
           </div>
-          <hr>
+          <hr />
         </div>
       </div>
       <div class="column list-domains">
         <p class="title">BUSINESS</p>
         <div class="domain-item" v-for="(site, index) in business" :key="index">
-          <p class="heading" v-text="site"/>
+          <p class="heading" v-text="site" />
           <div v-if="site in finished">
-            <p class="title" v-text="finished[site]"/>
-            <p class="heading" v-text="iata[finished[site]]"/>
+            <p class="title" v-text="finished[site]" />
+            <p class="heading" v-text="iata[finished[site]]" />
+            <p class="heading">Ping: {{ timings[`https://${site}/cdn-cgi/trace`] }}</p>
           </div>
-          <hr>
+          <hr />
         </div>
       </div>
       <div class="column list-domains">
         <p class="title">ENTERPRISE</p>
         <div class="domain-item" v-for="(site, index) in enterprise" :key="index">
-          <p class="heading" v-text="site"/>
+          <p class="heading" v-text="site" />
           <div v-if="site in finished">
-            <p class="title" v-text="finished[site]"/>
-            <p class="heading" v-text="iata[finished[site]]"/>
+            <p class="title" v-text="finished[site]" />
+            <p class="heading" v-text="iata[finished[site]]" />
+
+            <p class="heading">Ping: {{ timings[`https://${site}/cdn-cgi/trace`] }}</p>
           </div>
-          <hr>
+          <hr />
         </div>
       </div>
     </div>
@@ -104,6 +108,8 @@
 <script>
 import Vue from "vue";
 import Axios from "axios";
+import { hostname } from "os";
+import { setTimeout } from "timers";
 export default {
   name: "Main",
   props: {},
@@ -111,6 +117,7 @@ export default {
     return {
       testHostname: "",
       iata: [],
+      timings: [],
       finished: [],
       broken: [],
       free: [
@@ -142,6 +149,8 @@ export default {
         "cdt.org",
         "www.counterextremism.com",
         "www.ndi.org",
+        "www.findlaw.com",
+        "www.codeguard.com",
         "www.techagainstterrorism.org",
         "www.thetrevorproject.org"
       ],
@@ -153,9 +162,7 @@ export default {
         "ghost.org",
         "unpkg.com",
         "www.loc.gov",
-        "www.codeguard.com",
         "www.artstation.com",
-        "www.findlaw.com",
         "www.digitalocean.com",
         "i.gyazo.com"
       ]
@@ -166,7 +173,6 @@ export default {
     this.free.forEach(hostname => {
       this.loadHostname(hostname);
     });
-
     this.pro.forEach(hostname => {
       this.loadHostname(hostname);
     });
@@ -176,23 +182,36 @@ export default {
     this.enterprise.forEach(hostname => {
       this.loadHostname(hostname);
     });
-
     // load query string hostname
-    if(location.hash) {
-      this.testHostname = location.hash.replace('#', '');
+    if (location.hash) {
+      this.testHostname = location.hash.replace("#", "");
       this.loadTestHostname(this.testHostname);
       this.$forceUpdate();
     }
+    setTimeout(this.loadPing, 1500);
   },
   methods: {
+    loadPing() {
+      performance.getEntriesByType("resource").forEach(timing => {
+        this.timings[timing.name] =
+          timing.startTime > 0
+            ? Math.floor(timing.responseEnd - timing.startTime)
+            : "unknown";
+      });
+      this.$forceUpdate();
+    },
     preloadAirports() {
       Axios.get("/iata.json").then(response => {
         this.iata = response.data;
       });
     },
     loadTestHostname(hostname) {
-      history.replaceState('', '', hostname.includes('#') ? hostname : '#' + hostname)
-      this.loadHostname(hostname)
+      history.replaceState(
+        "",
+        "",
+        hostname.includes("#") ? hostname : "#" + hostname
+      );
+      this.loadHostname(hostname);
     },
     loadHostname(hostname) {
       Axios.get(`https://${hostname}/cdn-cgi/trace`)
@@ -209,7 +228,7 @@ export default {
         .catch(error => {
           // eslint-disable-next-line
           console.log(error);
-          Vue.set(this.broken, hostname, 'a');
+          Vue.set(this.broken, hostname, "a");
         });
     }
   }
