@@ -126,9 +126,11 @@ export default {
       broken: [],
       free: [
         "judge2020.com",
+        "domjh.net",
         "digital.com",
+        "firing.it",
         "www.shoutmeloud.com",
-        "www.cloudwards.net",
+        "judge2020.me",
         "cloudeereviews.com"
       ],
       pro: [
@@ -145,6 +147,9 @@ export default {
       business: [
         "judge.sh",
         "www.mozilla.org",
+        "domjh.com",
+        "manfredi.io",
+        "corporateclash.net",
         "sontusdatos.org",
         "www.opentech.fund",
         "cpj.org",
@@ -159,6 +164,7 @@ export default {
       ],
       enterprise: [
         "cloudflare.com",
+        "cdnjs.cloudflare.com",
         "medium.com",
         "discordapp.com",
         "www.zendesk.com",
@@ -167,6 +173,7 @@ export default {
         "www.loc.gov",
         "www.artstation.com",
         "www.digitalocean.com",
+        "quizlet.com",
         "i.gyazo.com"
       ]
     };
