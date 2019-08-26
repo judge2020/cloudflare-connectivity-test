@@ -2,8 +2,8 @@
   <div class="main-content">
     <div class="container has-text-centered">
       <h1 class="title">Cloudflare datacenter reachability</h1>
-      <h2 class="subtitle"></h2>
-      <br />
+      
+      <h2 class="subtitle"><a href="https://github.com/judge2020/cloudflare-connectivity-test/wiki/Explanation">Explanation</a></h2>
       <p class="subtitle">Test your website:</p>
       <form @submit="loadTestHostname(testHostname)">
         <div class="field has-addons has-addons-centered">
