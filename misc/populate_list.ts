@@ -3,6 +3,9 @@ import {writeFileSync} from "fs";
 import { Agent as HttpsAgent } from "https";
 const { IATA_KEY } = process.env;
 
+// TODO: change API. iatacodes.org is no longer active.
+process.exit(0);
+
 Axios.get(`https://iatacodes.org/api/v6/airports?api_key=${IATA_KEY}`, {
     httpsAgent: new HttpsAgent({ rejectUnauthorized: false })
 }).then(response => {
