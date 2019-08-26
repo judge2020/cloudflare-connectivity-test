@@ -41,7 +41,8 @@
           <div v-if="site in finished">
             <p class="title" v-text="finished[site]" />
             <p class="heading" v-text="iata[finished[site]]" />
-            <p class="heading">Ping: {{ timings[`https://${site}/cdn-cgi/trace`] }}</p>
+            <p class="heading">First ping: {{ timingsFirst[site] }}</p>
+            <p class="heading">Second ping: {{ timingsSecond[site] }}</p>
           </div>
           <hr />
         </div>
@@ -53,7 +54,8 @@
           <div v-if="site in finished">
             <p class="title" v-text="finished[site]" />
             <p class="heading" v-text="iata[finished[site]]" />
-            <p class="heading">Ping: {{ timings[`https://${site}/cdn-cgi/trace`] }}</p>
+            <p class="heading">First ping: {{ timingsFirst[site] }}</p>
+            <p class="heading">Second ping: {{ timingsSecond[site] }}</p>
           </div>
           <hr />
         </div>
@@ -65,7 +67,8 @@
           <div v-if="site in finished">
             <p class="title" v-text="finished[site]" />
             <p class="heading" v-text="iata[finished[site]]" />
-            <p class="heading">Ping: {{ timings[`https://${site}/cdn-cgi/trace`] }}</p>
+            <p class="heading">First ping: {{ timingsFirst[site] }}</p>
+            <p class="heading">Second ping: {{ timingsSecond[site] }}</p>
           </div>
           <hr />
         </div>
@@ -78,7 +81,8 @@
             <p class="title" v-text="finished[site]" />
             <p class="heading" v-text="iata[finished[site]]" />
 
-            <p class="heading">Ping: {{ timings[`https://${site}/cdn-cgi/trace`] }}</p>
+            <p class="heading">First ping: {{ timingsFirst[site] }}</p>
+            <p class="heading">Second ping: {{ timingsSecond[site] }}</p>
           </div>
           <hr />
         </div>
@@ -108,7 +112,6 @@
 <script>
 import Vue from "vue";
 import Axios from "axios";
-import { hostname } from "os";
 import { setTimeout } from "timers";
 export default {
   name: "Main",
@@ -117,7 +120,8 @@ export default {
     return {
       testHostname: "",
       iata: [],
-      timings: [],
+      timingsFirst: [],
+      timingsSecond: [],
       finished: [],
       broken: [],
       free: [
@@ -170,34 +174,34 @@ export default {
   },
   mounted() {
     this.preloadAirports();
-    this.free.forEach(hostname => {
-      this.loadHostname(hostname);
-    });
-    this.pro.forEach(hostname => {
-      this.loadHostname(hostname);
-    });
-    this.business.forEach(hostname => {
-      this.loadHostname(hostname);
-    });
-    this.enterprise.forEach(hostname => {
-      this.loadHostname(hostname);
-    });
+    this.free
+      .concat(this.pro, this.business, this.enterprise)
+      .forEach(hostname => {
+        this.loadHostname(hostname, 0).then(() => this.loadHostname(hostname, 1));
+      });
+
     // load query string hostname
     if (location.hash) {
       this.testHostname = location.hash.replace("#", "");
       this.loadTestHostname(this.testHostname);
       this.$forceUpdate();
     }
-    setTimeout(this.loadPing, 1500);
+    setTimeout(() => {
+      this.loadPing(0)
+      this.loadPing(1)
+    }, 1500);
   },
   methods: {
-    loadPing() {
-      performance.getEntriesByType("resource").forEach(timing => {
-        this.timings[timing.name] =
-          timing.startTime > 0
-            ? Math.floor(timing.responseEnd - timing.startTime)
-            : "unknown";
-      });
+    loadPing(loadNumber = 0) {
+      performance.getEntriesByType("resource")
+        .filter(timing => timing.name.includes(`load=${loadNumber}`))
+        .forEach(timing => {
+          if (loadNumber == 0) {
+            this.timingsFirst[new URL(timing.name).hostname] = Math.floor(timing.responseEnd - timing.startTime);
+          } else {
+            this.timingsSecond[new URL(timing.name).hostname] = Math.floor(timing.responseEnd - timing.startTime);
+          }
+        });
       this.$forceUpdate();
     },
     preloadAirports() {
@@ -213,8 +217,8 @@ export default {
       );
       this.loadHostname(hostname);
     },
-    loadHostname(hostname) {
-      Axios.get(`https://${hostname}/cdn-cgi/trace`)
+    loadHostname(hostname, loadNumber = 0) {
+      return Axios.get(`https://${hostname}/cdn-cgi/trace?load=${loadNumber}`)
         .then(response => {
           response.data
             .split("\n")
@@ -224,11 +228,6 @@ export default {
                 Vue.set(this.finished, hostname, element[1]);
               }
             });
-        })
-        .catch(error => {
-          // eslint-disable-next-line
-          console.log(error);
-          Vue.set(this.broken, hostname, "a");
         });
     }
   }
