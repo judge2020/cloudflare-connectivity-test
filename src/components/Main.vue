@@ -162,7 +162,7 @@ export default {
         "medium.com",
         "discordapp.com",
         "www.zendesk.com",
-        "ghost.org",
+        "ghost.io",
         "unpkg.com",
         "www.loc.gov",
         "www.artstation.com",
