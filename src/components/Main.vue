@@ -130,8 +130,7 @@ export default {
         "nodejs.org",
         "html5boilerplate.com",
         "yarnpkg.com",
-        "d3js.org",
-        "www.jsdelivr.com"
+        "d3js.org"
       ],
       business: [
         "judge.sh",
@@ -144,7 +143,6 @@ export default {
         "www.counterextremism.com",
         "www.ndi.org",
         "www.techagainstterrorism.org",
-        "www.lionpublishers.com",
         "www.thetrevorproject.org"
       ],
       enterprise: [
