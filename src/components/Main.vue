@@ -138,7 +138,6 @@ export default {
         "cdnjs.com",
         "getbootstrap.com",
         "reactjs.org",
-        "nodejs.org",
         "html5boilerplate.com",
         "yarnpkg.com",
         "d3js.org"
