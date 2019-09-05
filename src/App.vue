@@ -1,18 +1,19 @@
 <template>
-  <div id="app" class="container">
+ <div id="app" class="container">
     <Main/>
-  </div>
+ </div>
 </template>
 
-<script>
-import Main from './components/Main.vue'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import Main from './components/Main.vue';
 
-export default {
-  name: 'app',
+@Component({
   components: {
-    Main
-  }
-}
+    Main,
+  },
+})
+export default class App extends Vue {}
 </script>
 
 <style lang="scss">
