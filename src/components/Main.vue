@@ -5,6 +5,7 @@
 
       <h2 class="subtitle">
         <a
+          target="_blank"
           href="https://github.com/judge2020/cloudflare-connectivity-test/wiki/Explanation"
         >Explanation</a>
       </h2>
@@ -12,12 +13,7 @@
       <form @submit.prevent="loadTestHostname(testHostname)">
         <div class="field has-addons has-addons-centered">
           <div class="control">
-            <input
-              class="input"
-              type="text"
-              placeholder="example.com"
-              v-model="testHostname"
-            />
+            <input class="input" type="text" placeholder="example.com" v-model="testHostname" />
           </div>
           <div class="control">
             <a class="button is-info">GO</a>
@@ -92,7 +88,7 @@ import DomainItem from "./DomainItem";
   }
 })
 export default class Main extends Vue {
-  @Model({type: String}) testHostname;
+  @Model({ type: String }) testHostname;
   preloaded = false;
   iata = [];
   free = [
