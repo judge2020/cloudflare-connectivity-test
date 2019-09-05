@@ -9,6 +9,8 @@
     "populate": "cross-env NODE_ENV=production tsc misc/populate_list.ts && cross-env node misc/populate_list.js"
   },
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
     "axios": "^0.19.0",
     "bulma": "^0.7.5",
     "core-js": "^2.6.9",
