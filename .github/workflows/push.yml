@@ -1,0 +1,17 @@
+name: Push Checks
+on: push
+
+jobs:
+  build:
+    uses: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@master
+        with:
+          name: dist
+          path: dist
