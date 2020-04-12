@@ -93,7 +93,6 @@ export default class Main extends Vue {
   iata = [];
   free = [
     "judge2020.com",
-    "domjh.net",
     "digital.com",
     "firing.it",
     "www.shoutmeloud.com",
@@ -113,10 +112,10 @@ export default class Main extends Vue {
   ];
   business = [
     "judge.sh",
+    "clash.lol",
     "www.mozilla.org",
-    "domjh.com",
+    "domjh.net",
     "manfredi.io",
-    "corporateclash.net",
     "sontusdatos.org",
     "www.opentech.fund",
     "cpj.org",
@@ -141,6 +140,8 @@ export default class Main extends Vue {
     "www.artstation.com",
     "www.digitalocean.com",
     "quizlet.com",
+    "corporateclash.net",
+    "domjh.com",
     "i.gyazo.com"
   ];
   mounted() {
