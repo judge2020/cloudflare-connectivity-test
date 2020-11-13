@@ -21,6 +21,5 @@ yarn-error.log*
 *.sw?
 
 # compiled typescript
-/misc/populate_list.js
 .serverless
 .env
