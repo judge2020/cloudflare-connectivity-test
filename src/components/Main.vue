@@ -97,7 +97,8 @@ export default class Main extends Vue {
     "firing.it",
     "www.shoutmeloud.com",
     "judge2020.me",
-    "cloudeereviews.com"
+    "cloudeereviews.com",
+    "clash.lol"
   ];
   pro = [
     "js.org",
@@ -107,12 +108,10 @@ export default class Main extends Vue {
     "getbootstrap.com",
     "reactjs.org",
     "html5boilerplate.com",
-    "yarnpkg.com",
     "d3js.org"
   ];
   business = [
     "judge.sh",
-    "clash.lol",
     "www.mozilla.org",
     "domjh.net",
     "manfredi.io",
