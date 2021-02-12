@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 import Main from './components/Main.vue';
 
-@Component({
+@Options({
   components: {
     Main,
   },

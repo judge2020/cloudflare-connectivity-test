@@ -8,30 +8,31 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-proposal-decorators": "^7.12.1",
+    "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/plugin-proposal-decorators": "^7.12.13",
+    "@vue/compiler-sfc": "^3.0.5",
     "axios": "^0.19.2",
     "bulma": "^0.7.5",
-    "core-js": "^2.6.11",
+    "core-js": "^3.6.5",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
-    "vue": "^2.6.12",
-    "vue-class-component": "^7.2.6",
-    "vue-property-decorator": "^8.5.1"
+    "vue": "^3.0.0",
+    "vue-class-component": "^8.0.0-0",
+    "vue-property-decorator": "^9.1.2"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.12.1",
-    "@vue/cli-plugin-babel": "^3.12.1",
-    "@vue/cli-plugin-eslint": "^3.12.1",
-    "@vue/cli-plugin-typescript": "^3.12.1",
-    "@vue/cli-service": "^3.12.1",
-    "@vue/eslint-config-typescript": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-typescript": "^4.5.11",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
     "babel-eslint": "^10.1.0",
-    "cross-env": "^5.2.1",
-    "eslint": "^6.8.0",
-    "eslint-plugin-vue": "^5.2.3",
-    "typescript": "^3.9.7",
-    "vue-template-compiler": "^2.6.12"
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^7.0.0-0",
+    "typescript": "~3.9.3"
   },
   "eslintConfig": {
     "root": true,
@@ -39,7 +40,7 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
+      "plugin:vue/vue3-essential",
       "eslint:recommended",
       "@vue/typescript"
     ],
@@ -54,7 +55,8 @@
     }
   },
   "browserslist": [
-    "> 0.25%",
-    "Chrome > 60"
+    "> 1%",
+    "last 2 versions",
+    "not dead"
   ]
 }

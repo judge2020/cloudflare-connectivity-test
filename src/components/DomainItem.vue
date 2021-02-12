@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="heading" v-text="hostname" />
+    <h2 class="subtitle" v-text="hostname" />
     <div v-if="finished">
       <p class="title" v-text="datacenter" />
       <p class="heading" v-text="airport" />
@@ -8,8 +8,16 @@
       <p class="heading" v-if="ipv6">IPv6</p>
       <p class="heading" v-if="!ipv6">IPv4</p>
       <p class="heading" v-text="httpVerison" />
-      <p class="heading">First ping: {{ firstPing }}</p>
-      <p class="heading">Second ping: {{ secondPing }}</p>
+      <div class="columns">
+        <div class="column is-one-half">
+          <p class="heading">First ping:</p>
+          <h2 class="subtitle is-2" v-text="firstPing" />
+        </div>
+        <div class="column is-one-half">
+          <p class="heading">Second ping:</p>
+          <h2 class="subtitle is-2" v-text="secondPing" />
+        </div>
+      </div>
     </div>
     <div v-if="broken">
       <p>Likely not a Cloudflare website, or not proxied.</p>
@@ -17,7 +25,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Options, Vue, prop } from "vue-class-component";
 import Axios from "axios";
 
 interface TraceResponse {
@@ -35,21 +43,23 @@ interface TraceResponse {
   warp: string;
 }
 
-@Component
-export default class DomainItem extends Vue {
-  // @ts-ignore
-  @Prop(String) readonly hostname: string;
-  finished = false
-  broken = false
-  datacenter = ""
-  ipv6 = false
-  httpVerison = ""
-  airport = ""
-  firstPing = 0
-  secondPing = 0
+class Props {
+  public hostname = prop<string>({ default: "" });
+}
+
+@Options({})
+export default class DomainItem extends Vue.with(Props) {
+  finished = false;
+  broken = false;
+  datacenter = "";
+  ipv6 = false;
+  httpVerison = "";
+  airport = "";
+  firstPing = 0;
+  secondPing = 0;
   mounted() {
     this.loadHostname(this.hostname)
-      .then(datacenter => {
+      .then((datacenter) => {
         // detect ipv6
         this.ipv6 = datacenter.ip.includes(":");
         this.httpVerison = datacenter.http;
@@ -71,15 +81,15 @@ export default class DomainItem extends Vue {
   loadPing(hostname: string, loadNumber = 0) {
     let timing = performance
       .getEntriesByType("resource")
-      .filter(timing => timing.name.includes(hostname))
-      .filter(timing => timing.name.includes(`load=${loadNumber}`))[0];
+      .filter((timing) => timing.name.includes(hostname))
+      .filter((timing) => timing.name.includes(`load=${loadNumber}`))[0];
     // @ts-ignore
     return Math.floor(timing.responseEnd - timing.startTime);
   }
   loadHostname(hostname: string, loadNumber = 0): Promise<TraceResponse> {
     return Axios.get(
       `https://${hostname}/cdn-cgi/trace?load=${loadNumber}`
-    ).then(response => {
+    ).then((response) => {
       let resp: TraceResponse = {
         fl: "",
         h: "",
@@ -92,7 +102,7 @@ export default class DomainItem extends Vue {
         loc: "",
         tls: "",
         sni: "",
-        warp: ""
+        warp: "",
       };
       response.data
         .split("\n")

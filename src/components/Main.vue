@@ -9,6 +9,7 @@
           href="https://github.com/judge2020/cloudflare-connectivity-test/wiki/Explanation"
         >Explanation</a>
       </h2>
+      <h5 class="subtitle is-5">Note: all tests run at once, so this is effectively a <a href="https://medium.com/@datapath_io/what-is-acceptable-jitter-7e93c1e68f9b">jitter test</a>.</h5>
       <p class="subtitle">Test your website:</p>
       <form @submit.prevent="loadTestHostname(testHostname)">
         <div class="field has-addons has-addons-centered">
@@ -79,16 +80,17 @@
 </template>
 
 <script>
-import { Vue, Component, Prop, Model } from "vue-property-decorator";
+import { Options, Vue } from 'vue-class-component';
+
 import Axios from "axios";
 import DomainItem from "./DomainItem";
-@Component({
+@Options({
   components: {
     DomainItem
   }
 })
 export default class Main extends Vue {
-  @Model({ type: String }) testHostname;
+  testHostname = "";
   preloaded = false;
   iata = [];
   free = [
@@ -106,18 +108,16 @@ export default class Main extends Vue {
     "nodejs.org",
     "cdnjs.com",
     "getbootstrap.com",
-    "reactjs.org",
     "html5boilerplate.com",
     "d3js.org"
   ];
   business = [
-    "judge.sh",
+    "cloudflare-test-target.judge.sh",
     "www.mozilla.org",
     "domjh.net",
     "manfredi.io",
     "sontusdatos.org",
     "www.opentech.fund",
-    "cpj.org",
     "www.amnestyusa.org",
     "cdt.org",
     "www.counterextremism.com",
